@@ -1,20 +1,45 @@
-<div id="authContainer" style="font-family: sans-serif; text-align: center; padding: 20px; background: #1a1a1a; color: white; border-radius: 10px; max-width: 400px; margin: auto;">
-  <h3 style="margin-bottom: 15px;">The Yes Verification System</h3>
-  <input type="password" id="passInput" placeholder="password goes here" style="padding: 10px; border-radius: 5px; border: 1px solid #444; width: 80%; margin-bottom: 10px; background: #333; color: white;">
-  <br>
-  <button onclick="checkAccess()" style="padding: 10px 20px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; font-weight: bold;">
-    Unlock Launcher
-  </button>
-  <p id="errorMsg" style="color: #ff4d4d; font-size: 12px; margin-top: 10px; display: none;">Incorrect Password</p>
+<div id="main-wrapper" style="font-family: sans-serif; height: 100vh; width: 100%; margin: 0; background: #1a1a1a; display: flex; justify-content: center; align-items: center;">
+
+  <div id="authContainer" style="text-align: center; padding: 30px; background: #222; color: white; border-radius: 12px; border: 1px solid #333; width: 350px;">
+    <h3 style="margin-bottom: 20px;">The Yes Verification</h3>
+    <input type="password" id="passInput" placeholder="password goes here" style="padding: 12px; border-radius: 5px; border: 1px solid #444; width: 90%; margin-bottom: 15px; background: #333; color: white;">
+    <br>
+    <button onclick="checkAccess()" style="padding: 12px 25px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; font-weight: bold; width: 100%;">
+      Unlock Launcher
+    </button>
+    <p id="errorMsg" style="color: #ff4d4d; font-size: 12px; margin-top: 15px; display: none;">Incorrect Password</p>
+  </div>
+
+  <div id="launchContainer" style="display: none; text-align: center; color: white;">
+    <h2 style="margin-bottom: 20px;">The Yes ByPasser</h2>
+    <input type="text" id="urlInput" placeholder="https://example.com" style="padding: 15px; border-radius: 8px; border: 1px solid #444; width: 350px; margin-bottom: 20px; font-size: 16px; background: #fff; color: #000;">
+    <br>
+    <button onclick="displayInPage()" style="padding: 15px 40px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold;">
+      Launch Inside Page
+    </button>
+  </div>
+
+  <div id="viewerContainer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999;">
+    <div class="watermark-dropdown" style="position: absolute; top: 20px; left: 20px; z-index: 10000; background: rgba(0, 0, 0, 0.85); padding: 15px; border-radius: 10px; color: white; border: 1px solid #444; font-family: sans-serif;">
+      <strong>the yes</strong>
+      <div class="dropdown-content" style="display: none; margin-top: 10px; border-top: 1px solid #555; padding-top: 10px;">
+        <button onclick="document.documentElement.requestFullscreen()" style="margin-bottom: 5px;">Fullscreen</button>
+        <button onclick="closeViewer()" style="background: #dc3545;">Exit Viewer</button>
+      </div>
+    </div>
+    <iframe id="targetFrame" style="width: 100%; height: 100%; border: none;" allow="fullscreen"></iframe>
+  </div>
+
 </div>
 
-<div id="launchContainer" style="display: none; text-align: center; font-family: sans-serif; margin-top: 20px;">
-  <input type="text" id="urlInput" placeholder="https://example.com" style="padding: 12px; border-radius: 8px; border: 1px solid #444; width: 300px; margin-bottom: 15px; font-size: 14px;">
-  <br>
-  <button onclick="openAboutBlank()" style="padding: 15px 30px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 10px rgba(40,167,69,0.3);">
-    Launch The Yes ByPasser
-  </button>
-</div>
+<style>
+  body, html { margin: 0; padding: 0; overflow: hidden; background: #1a1a1a; }
+  .watermark-dropdown { opacity: 0.4; transition: opacity 0.3s; }
+  .watermark-dropdown:hover { opacity: 1; }
+  .watermark-dropdown:hover .dropdown-content { display: block; }
+  .dropdown-content button { background: #444; color: white; border: none; padding: 10px; border-radius: 4px; width: 120px; cursor: pointer; font-weight: bold; display: block; }
+  .dropdown-content button:hover { background: #666; }
+</style>
 
 <script>
 function checkAccess() {
@@ -29,8 +54,7 @@ function checkAccess() {
   }
 }
 
-function openAboutBlank() {
-  // Get the URL from the new input field
+function displayInPage() {
   let targetUrl = document.getElementById('urlInput').value;
   
   if (!targetUrl) {
@@ -38,44 +62,20 @@ function openAboutBlank() {
     return;
   }
 
-  // Basic check to ensure it starts with http/https
   if (!targetUrl.startsWith('http')) {
     targetUrl = 'https://' + targetUrl;
   }
 
-  const win = window.open("about:blank", "_blank");
-  
-  const html = `
-    <html>
-    <head>
-      <title>The Yes</title>
-      <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; }
-        iframe { width: 100%; height: 100%; border: none; }
-        .watermark-dropdown {
-          position: absolute; top: 20px; left: 20px; z-index: 1000;
-          background: rgba(0, 0, 0, 0.85); padding: 15px; border-radius: 10px; color: white; border: 1px solid #444;
-          transition: opacity 0.3s; opacity: 0.4;
-        }
-        .watermark-dropdown:hover { opacity: 1; }
-        .dropdown-content { display: none; margin-top: 10px; border-top: 1px solid #555; padding-top: 10px; }
-        .watermark-dropdown:hover .dropdown-content { display: block; }
-        button { background: #444; color: white; border: none; padding: 10px; border-radius: 4px; width: 100%; cursor: pointer; font-weight: bold; }
-        button:hover { background: #666; }
-      </style>
-    </head>
-    <body>
-      <div class="watermark-dropdown">
-        <strong>the yes</strong>
-        <div class="dropdown-content">
-          <button onclick="document.documentElement.requestFullscreen()">Fullscreen Mode</button>
-        </div>
-      </div>
-      <iframe src="${targetUrl}" allow="fullscreen"></iframe>
-    </body>
-    </html>
-  `;
-  win.document.write(html);
-  win.document.close(); // Important to finish loading the doc
+  // Hide the launcher and show the full-screen iframe
+  document.getElementById('launchContainer').style.display = 'none';
+  document.getElementById('viewerContainer').style.display = 'block';
+  document.getElementById('targetFrame').src = targetUrl;
+}
+
+function closeViewer() {
+  // Go back to the URL input screen
+  document.getElementById('viewerContainer').style.display = 'none';
+  document.getElementById('targetFrame').src = "";
+  document.getElementById('launchContainer').style.display = 'block';
 }
 </script>
